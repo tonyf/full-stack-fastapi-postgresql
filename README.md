@@ -4,6 +4,15 @@
 
 Generate a backend and frontend stack using Python, including interactive API documentation.
 
+### TODOs
+
+[] Add React frontend
+[] Add typescript api generation script
+[] Migrate SQLAlchemy to async
+[] Setup Github Workflows for deployment
+[] Create k8s deployment files
+[] Add terraform def
+
 ### Interactive API documentation
 
 [![API docs](img/docs.png)](https://github.com/tiangolo/full-stack-fastapi-postgresql)
