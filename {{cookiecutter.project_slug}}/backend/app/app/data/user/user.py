@@ -1,19 +1,33 @@
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, Column, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy.orm import RelationshipProperty, relationship
+from sqlalchemy.ext.hybrid import hybrid_property
 
-from app.db.base_class import Base
+from app.data.base.model import Base
 
 if TYPE_CHECKING:
-    from .item import Item  # noqa: F401
+    from data.auth.model import Auth  # noqa: F401
+
+    AuthRelationship = RelationshipProperty[Auth]
+else:
+    AuthRelationship = RelationshipProperty
 
 
 class User(Base):
     id = Column(Integer, primary_key=True, index=True)
-    full_name = Column(String, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
+
+    auth_id = Column(Integer, ForeignKey("auth.id"), nullable=False)
+    auth: AuthRelationship = relationship("Auth", uselist=False, back_populates="user")
+
+    # TODO: move to rbac
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
-    items = relationship("Item", back_populates="owner")
+
+    first_name = Column(String)
+    last_name = Column(String)
+
+    @hybrid_property
+    def email(self) -> str:
+        return self.auth.email

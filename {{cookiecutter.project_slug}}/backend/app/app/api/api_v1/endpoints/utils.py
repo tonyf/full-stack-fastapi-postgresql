@@ -32,4 +32,24 @@ def test_email(
     Test emails.
     """
     send_test_email(email_to=email_to)
-    return {"msg": "Test email sent"}
+    return {"msg": f"Test email sent to {email_to}"}
+
+
+@router.post("/test/sentry", response_model=schemas.Msg, status_code=500)
+def test_sentry(
+    current_user: models.User = Depends(deps.get_current_active_superuser),
+) -> Any:
+    raise Exception("Test Exception")
+
+
+@router.post("/test/posthog", response_model=schemas.Msg, status_code=200)
+def test_posthog(
+    current_user: models.User = Depends(deps.get_current_active_superuser),
+) -> Any:
+    from app.services.posthog import PosthogClient
+
+    posthog = PosthogClient().get_client()
+    posthog.capture("test-id", "test-event")
+
+    return {"msg": f"Test event created"}
+
