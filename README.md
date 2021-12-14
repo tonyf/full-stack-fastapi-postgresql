@@ -32,7 +32,6 @@ Generate a backend and frontend stack using Python, including interactive API do
 ## Features
 
 * Full **Docker** integration (Docker based).
-* Docker Swarm Mode deployment.
 * **Docker Compose** integration and optimization for local development.
 * **Production ready** Python web server using Uvicorn and Gunicorn.
 * Python <a href="https://github.com/tiangolo/fastapi" class="external-link" target="_blank">**FastAPI**</a> backend:
@@ -52,27 +51,9 @@ Generate a backend and frontend stack using Python, including interactive API do
 * **Celery** worker that can import and use models and code from the rest of the backend selectively.
 * REST backend tests based on **Pytest**, integrated with Docker, so you can test the full API interaction, independent on the database. As it runs in Docker, it can build a new data store from scratch each time (so you can use ElasticSearch, MongoDB, CouchDB, or whatever you want, and just test that the API works).
 * Easy Python integration with **Jupyter Kernels** for remote or in-Docker development with extensions like Atom Hydrogen or Visual Studio Code Jupyter.
-* **Vue** frontend:
-    * Generated with Vue CLI.
-    * **JWT Authentication** handling.
-    * Login view.
-    * After login, main dashboard view.
-    * Main dashboard with user creation and edition.
-    * Self user edition.
-    * **Vuex**.
-    * **Vue-router**.
-    * **Vuetify** for beautiful material design components.
-    * **TypeScript**.
-    * Docker server based on **Nginx** (configured to play nicely with Vue-router).
-    * Docker multi-stage building, so you don't need to save or commit compiled code.
-    * Frontend tests ran at build time (can be disabled too).
-    * Made as modular as possible, so it works out of the box, but you can re-generate with Vue CLI or create it as you need, and re-use what you want.
-    * It's also easy to remove it if you have an API-only app, check the instructions in the generated `README.md`.
 * **PGAdmin** for PostgreSQL database, you can modify it to use PHPMyAdmin and MySQL easily.
 * **Flower** for Celery jobs monitoring.
 * Load balancing between frontend and backend with **Traefik**, so you can have both under the same domain, separated by path, but served by different containers.
-* Traefik integration, including Let's Encrypt **HTTPS** certificates automatic generation.
-* GitLab **CI** (continuous integration), including frontend and backend testing.
 
 ## How to use it
 
@@ -106,9 +87,6 @@ The input variables, with their default values (some auto generated) are:
 * `domain_main`: The domain in where to deploy the project for production (from the branch `production`), used by the load balancer, backend, etc. By default, based on the project slug.
 * `domain_staging`: The domain in where to deploy while staging (before production) (from the branch `master`). By default, based on the main domain.
 
-* `docker_swarm_stack_name_main`: The name of the stack while deploying to Docker in Swarm mode for production. By default, based on the domain.
-* `docker_swarm_stack_name_staging`: The name of the stack while deploying to Docker in Swarm mode for staging. By default, based on the domain.
-
 * `secret_key`: Backend server secret key. Use the method above to generate it.
 * `first_superuser`: The first superuser generated, with it you will be able to create more users, etc. By default, based on the domain.
 * `first_superuser_password`: First superuser password. Use the method above to generate it.
@@ -122,10 +100,6 @@ The input variables, with their default values (some auto generated) are:
 * `postgres_password`: Postgres database password. Use the method above to generate it. (You could easily modify it to use MySQL, MariaDB, etc).
 * `pgadmin_default_user`: PGAdmin default user, to log-in to the PGAdmin interface.
 * `pgadmin_default_user_password`: PGAdmin default user password. Generate it with the method above.
- 
-* `traefik_constraint_tag`: The tag to be used by the internal Traefik load balancer (for example, to divide requests between backend and frontend) for production. Used to separate this stack from any other stack you might have. This should identify each stack in each environment (production, staging, etc).
-* `traefik_constraint_tag_staging`: The Traefik tag to be used while on staging.
-* `traefik_public_constraint_tag`: The tag that should be used by stack services that should communicate with the public.
 
 * `flower_auth`: Basic HTTP authentication for flower, in the form`user:password`. By default: "`admin:changethis`".
 
@@ -149,130 +123,6 @@ After using this generator, your new project (the directory created) will contai
 ## Sibling project generators
 
 * Full Stack FastAPI Couchbase: [https://github.com/tiangolo/full-stack-fastapi-couchbase](https://github.com/tiangolo/full-stack-fastapi-couchbase).
-
-## Release Notes
-
-### Latest Changes
-
-* Update issue-manager. PR [#211](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/211).
-* Add [GitHub Sponsors](https://github.com/sponsors/tiangolo) button. PR [#201](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/201).
-* Add consistent errors for env vars not set. PR [#200](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/200).
-* Upgrade Traefik to version 2, keeping in sync with DockerSwarm.rocks. PR [#199](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/199).
-* Add docs about reporting test coverage in HTML. PR [#161](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/161).
-* Run tests with `TestClient`. PR [#160](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/160).
-* Refactor backend:
-    * Simplify configs for tools and format to better support editor integration.
-    * Add mypy configurations and plugins.
-    * Add types to all the codebase.
-    * Update types for SQLAlchemy models with plugin.
-    * Update and refactor CRUD utils.
-    * Refactor DB sessions to use dependencies with `yield`.
-    * Refactor dependencies, security, CRUD, models, schemas, etc. To simplify code and improve autocompletion.
-    * Change from PyJWT to Python-JOSE as it supports additional use cases.
-    * Fix JWT tokens using user email/ID as the subject in `sub`.
-    * PR [#158](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/158).
-* Add docs about removing the frontend, for an API-only app. PR [#156](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/156).
-* Simplify scripts and development, update docs and configs. PR [#155](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/155).
-* Simplify `docker-compose.*.yml` files, refactor deployment to reduce config files. PR [#153](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/153).
-* Simplify env var files, merge to a single `.env` file. PR [#151](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/151).
-
-### 0.5.0
-
-* Make the Traefik public network a fixed default of `traefik-public` as done in DockerSwarm.rocks, to simplify development and iteration of the project generator. PR [#150](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/150).
-* Update to PostgreSQL 12. PR [#148](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/148). by [@RCheese](https://github.com/RCheese).
-* Use Poetry for package management. Initial PR [#144](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/144) by [@RCheese](https://github.com/RCheese).
-* Fix Windows line endings for shell scripts after project generation with Cookiecutter hooks. PR [#149](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/149).
-* Upgrade Vue CLI to version 4. PR [#120](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/120) by [@br3ndonland](https://github.com/br3ndonland).
-* Remove duplicate `login` tag. PR [#135](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/135) by [@Nonameentered](https://github.com/Nonameentered).
-* Fix showing email in dashboard when there's no user's full name. PR [#129](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/129) by [@rlonka](https://github.com/rlonka).
-* Format code with Black and Flake8. PR [#121](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/121) by [@br3ndonland](https://github.com/br3ndonland).
-* Simplify SQLAlchemy Base class. PR [#117](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/117) by [@airibarne](https://github.com/airibarne).
-* Update CRUD utils for users, handling password hashing. PR [#106](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/106) by [@mocsar](https://github.com/mocsar).
-* Use `.` instead of `source` for interoperability. PR [#98](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/98) by [@gucharbon](https://github.com/gucharbon).
-* Use Pydantic's `BaseSettings` for settings/configs and env vars. PR [#87](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/87) by [@StephenBrown2](https://github.com/StephenBrown2).
-* Remove `package-lock.json` to let everyone lock their own versions (depending on OS, etc).
-* Simplify Traefik service labels PR [#139](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/139).
-* Add email validation. PR [#40](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/40) by [@kedod](https://github.com/kedod).
-* Fix typo in README. PR [#83](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/83) by [@ashears](https://github.com/ashears).
-* Fix typo in README. PR [#80](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/80) by [@abjoker](https://github.com/abjoker).
-* Fix function name `read_item` and response code. PR [#74](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/74) by [@jcaguirre89](https://github.com/jcaguirre89).
-* Fix typo in comment. PR [#70](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/70) by [@daniel-butler](https://github.com/daniel-butler).
-* Fix Flower Docker configuration. PR [#37](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/37) by [@dmontagu](https://github.com/dmontagu).
-* Add new CRUD utils based on DB and Pydantic models. Initial PR [#23](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/23) by [@ebreton](https://github.com/ebreton).
-* Add normal user testing Pytest fixture. PR [#20](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/20) by [@ebreton](https://github.com/ebreton).
-
-### 0.4.0
-
-* Fix security on resetting a password. Receive token as body, not query. PR [#34](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/34).
-
-* Fix security on resetting a password. Receive it as body, not query. PR [#33](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/33) by [@dmontagu](https://github.com/dmontagu).
-
-* Fix SQLAlchemy class lookup on initialization. PR [#29](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/29) by [@ebreton](https://github.com/ebreton).
-
-* Fix SQLAlchemy operation errors on database restart. PR [#32](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/32) by [@ebreton](https://github.com/ebreton).
-
-* Fix locations of scripts in generated README. PR [#19](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/19) by [@ebreton](https://github.com/ebreton).
-
-* Forward arguments from script to `pytest` inside container. PR [#17](https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/17) by [@ebreton](https://github.com/ebreton).
-
-* Update development scripts.
-
-* Read Alembic configs from env vars. PR <a href="https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/9" target="_blank">#9</a> by <a href="https://github.com/ebreton" target="_blank">@ebreton</a>.
-
-* Create DB Item objects from all Pydantic model's fields.
-
-* Update Jupyter Lab installation and util script/environment variable for local development.
-
-### 0.3.0
-
-* PR <a href="https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/14" target="_blank">#14</a>:
-    * Update CRUD utils to use types better.
-    * Simplify Pydantic model names, from `UserInCreate` to `UserCreate`, etc.
-    * Upgrade packages.
-    * Add new generic "Items" models, crud utils, endpoints, and tests. To facilitate re-using them to create new functionality. As they are simple and generic (not like Users), it's easier to copy-paste and adapt them to each use case.
-    * Update endpoints/*path operations* to simplify code and use new utilities, prefix and tags in `include_router`.
-    * Update testing utils.
-    * Update linting rules, relax vulture to reduce false positives.
-    * Update migrations to include new Items.
-    * Update project README.md with tips about how to start with backend.
-
-* Upgrade Python to 3.7 as Celery is now compatible too. PR <a href="https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/10" target="_blank">#10</a> by <a href="https://github.com/ebreton" target="_blank">@ebreton</a>.
-
-### 0.2.2
-
-* Fix frontend hijacking /docs in development. Using latest https://github.com/tiangolo/node-frontend with custom Nginx configs in frontend. <a href="https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/6" target="_blank">PR #6</a>.
-
-### 0.2.1
-
-* Fix documentation for *path operation* to get user by ID. <a href="https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/4" target="_blank">PR #4</a> by <a href="https://github.com/mpclarkson" target="_blank">@mpclarkson</a> in FastAPI.
-
-* Set `/start-reload.sh` as a command override for development by default.
-
-* Update generated README.
-
-### 0.2.0
-
-**<a href="https://github.com/tiangolo/full-stack-fastapi-postgresql/pull/2" target="_blank">PR #2</a>**:
-
-* Simplify and update backend `Dockerfile`s.
-* Refactor and simplify backend code, improve naming, imports, modules and "namespaces".
-* Improve and simplify Vuex integration with TypeScript accessors.
-* Standardize frontend components layout, buttons order, etc.
-* Add local development scripts (to develop this project generator itself).
-* Add logs to startup modules to detect errors early.
-* Improve FastAPI dependency utilities, to simplify and reduce code (to require a superuser).
-
-### 0.1.2
-
-* Fix path operation to update self-user, set parameters as body payload.
-
-### 0.1.1
-
-Several bug fixes since initial publication, including:
-
-* Order of path operations for users.
-* Frontend sending login data in the correct format.
-* Add https://localhost variants to CORS.
 
 ## License
 
