@@ -1,10 +1,8 @@
 from typing import Optional
 from sqlalchemy.orm import Session
 
-from app.data import crud, schemas
+from app.data import crud, schemas, models
 from app.core.config import settings
-from app.data.base import model  # noqa: F401
-from app.data.auth import Auth
 
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB
 # otherwise, SQL Alchemy might fail to initialize relationships properly
@@ -16,7 +14,7 @@ async def init_db(db: Session) -> None:
     # But if you don't want to use migrations, create
     # the tables un-commenting the next line
     # Base.metadata.create_all(bind=engine)
-    auth: Optional[Auth] = await crud.auth.get_by_email(
+    auth: Optional[models.Auth] = await crud.auth.get_by_email(
         db, email=settings.FIRST_SUPERUSER
     )
     if not auth:
